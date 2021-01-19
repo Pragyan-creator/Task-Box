@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskBox</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <h1>TaskBox</h1>
+    <form onsubmit="handleSubmit(event)">
+        <input type="text" name="title" placeholder="Enter task title">
+    </form>
+    <h2>My Tasks-0</h2>
+    <ul></ul>
+    <script>
+        const ulTag=document.querySelector('ul')
+        const h2Tag=document.querySelector('h2')
+        const tasks=JSON.parse(localStorage.getItem('tasks'))||[]
+        const handleSubmit=(e)=>{
+            e.preventDefault()
+             const task={
+                 id:Number(new Date()),
+                 title:e.target.title.value
+             }
+             tasks.push(task)
+             e.target.reset()
+             localStorage.setItem('tasks',JSON.stringify(tasks))
+
+             liGenerator(task)
+            }
+            //create element
+        const liGenerator=(task)=>{      
+             const liTag=document.createElement('li')
+             liTag.textContent=task.title
+             ulTag.appendChild(liTag)
+
+             h2Tag.textContent=`My Tasks-${tasks.length}`
+             liRemove(liTag,task)
+        }
+
+             //remove functionality
+        const liRemove=(liTag,task)=>{
+                liTag.addEventListener('click',()=>{
+                 ulTag.removeChild(liTag)
+                 const index=tasks.findIndex((arrTask)=>{
+                 return arrTask.id==task.id
+             })
+             tasks.splice(index,1)
+             localStorage.setItem('tasks',JSON.stringify(tasks))
+             h2Tag.textContent=`My Tasks-${tasks.length}`
+            })
+
+
+        }
+        //handle page reload-retain the content even after page reload
+        tasks.forEach((task)=>{
+            liGenerator(task)
+        })
+
+    </script>
+</body>
+</html>
